@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTA Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.logInfoMapper">
+ <!--   <resultMap id="loginInfoResMap"  type="domain.loginInfo">
+        <id column="lid" property="lid"/>
+        <result column="ip" property="ip"/>
+        <result column="loginTime" property="loginTime"/>
+        &lt;!&ndash;<result column="uid" property="user.id"/>
+        <result column="name" property="user.name"/>
+        <result column="password" property="user.password"/>
+        <result column="email" property="user.email"/>
+        <result column="phoneNumber" property="user.phoneNumber"/>
+        <result column="birthday" property="user.birthday"/>&ndash;&gt;
+    </resultMap>
+    &lt;!&ndash;<resultMap id="userResMap" extends="loginInfoResMap" type="domain.loginInfo">
+        <id column="uid" property="user.id"/>
+        <result column="name" property="user.name"/>
+        <result column="password" property="user.password"/>
+        <result column="email" property="user.email"/>
+        <result column="phoneNumber" property="user.phoneNumber"/>
+        <result column="birthday" property="user.birthday"/>
+    </resultMap>&ndash;&gt;
+    <resultMap id="try" extends="loginInfoResMap" type="domain.loginInfo">
+        <association property="user" javaType="domain.user">
+
+            <id column="uid" property="id"/>
+            <result column="name" property="name"/>
+            <result column="password" property="password"/>
+            <result column="email" property="email"/>
+            <result column="phoneNumber" property="phoneNumber"/>
+            <result column="birthday" property="birthday"/>
+        </association>
+    </resultMap>-->
+
+
+
+    <resultMap id="father" type="domain.loginInfo">
+        <result column="lid" property="lid"/>
+        <result column="ip" property="ip"/>
+
+        <!--<result column="uid" property="user.id"/>
+        <result column="name" property="user.name"/>
+        <result column="password" property="user.password"/>
+        <result column="email" property="user.email"/>
+        <result column="phoneNumber" property="user.phoneNumber"/>
+        <result column="birthday" property="user.birthday"/>-->
+
+    </resultMap>
+    <resultMap id="son" extends="father" type="domain.loginInfo">
+        <result column="uid" property="user.id"/>
+        <result column="name" property="user.name"/>
+        <result column="password" property="user.password"/>
+        <result column="email" property="user.email"/>
+        <result column="phoneNumber" property="user.phoneNumber"/>
+        <result column="birthday" property="user.birthday"/>
+        <result column="loginTime" property="loginTime"/>
+    </resultMap>
+
+    <resultMap id="son02" extends="father" type="domain.loginInfo">
+        <association property="user" javaType="domain.user">
+
+            <id column="uid" property="id"/>
+            <result column="name" property="name"/>
+            <result column="password" property="password"/>
+            <result column="email" property="email"/>
+            <result column="phoneNumber" property="phoneNumber"/>
+            <result column="birthday" property="birthday"/>
+        </association>
+    </resultMap>
+    <select id="getLoginInfo$user" resultMap="son">
+        SELECT * FROM LOGIN_INFOs L,USERS U WHERE U.UID=L.UID;
+    </select>
+
+
+    <!--=============================================================-->
+    <resultMap id="fatherCollection" type="domain.user">
+        <id column="uid" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="passworde"/>
+        <result column="email" property="email"/>
+        <result column="phoneNumber" property="phoneNumber"/>
+        <result column="birthday" property="birthday"/>
+    </resultMap>
+    <resultMap id="sonCollection" extends="fatherCollection" type="domain.user">
+        <collection property="loginInfoList" ofType="domain.loginInfo">
+            <result column="lid" property="lid"/>
+            <result column="ip" property="ip"/>
+            <result column="loginTime" property="loginTime"/>
+        </collection>
+    </resultMap>
+    <select id="oneToMuti" resultMap="sonCollection">
+        SELECT * FROM USERS U LEFT JOIN LOGIN_INFOS L ON U.UID=L.UID;
+
+    </select>
+<!--==========================================================================-->
+    <resultMap id="rolesFather" type="domain.user">
+        <id column="uid" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="phoneNumber" property="phoneNumber"/>
+        <result column="birthday" property="birthday"/>
+    </resultMap>
+    <resultMap id="rolesSon"  extends="rolesFather" type="domain.user">
+        <collection property="roleList" ofType="domain.role">
+            <id column="rid" property="rid"/>
+            <result column="x" property="name"/>
+            <result column="description" property="description"/>
+        </collection>
+    </resultMap>
+
+    <select id="getUserRoles" resultMap="rolesSon">
+        SELECT u.*,r.rid,r.description,r.name 'x' FROM USERS U LEFT JOIN USERS_ROLES UR ON U.UID=UR.UID LEFT JOIN ROLES R ON UR.RID=R.RID;
+    </select>
+
+    <resultMap id="fatherfingAllLoginInfos" type="domain.loginInfo">
+        <id column="lid" property="lid"/>
+        <result column="ip" property="ip"/>
+        <result column="loginTime" property="loginTime"/>
+    </resultMap>
+    <resultMap id="sonfingAllLoginInfos" extends="fatherfingAllLoginInfos" type="domain.loginInfo">
+         <association column="uid" property="user"  select="dao.userMapper.findUserByUid"/>
+    </resultMap>
+    <select id="fingAllLoginInfos" flushCache="true" resultMap="sonfingAllLoginInfos">
+         SELECT * FROM LOGIN_INFOS;
+    </select>
+
+</mapper>

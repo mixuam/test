@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTA Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.userMapper">
+    <resultMap id="userResMap" type="domain.user">
+       <id column="uid" property="id"/>
+       <result column="name" property="name"/>
+       <result column="password" property="password"/>
+       <result column="email" property="email"/>
+       <result column="phoneNumber" property="phoneNumber"/>
+    </resultMap>
+    <select id="getByName$if" resultMap="userResMap" parameterType="domain.user">
+        SELECT * FROM USERS WHERE 1=1
+        <if test="name!=null and name!=''">
+             AND NAME=#{name}
+        </if>
+    </select>
+    <insert id="insertUser$if" parameterType="domain.user">
+        <selectKey resultType="Int" keyColumn="uid" keyProperty="id" order="AFTER" >
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+        INSERT INTO users (NAME,PASSWORD,EMAIL,PHONENUMBER,UID) VALUES (
+
+        <if test="name!=null and name!=''">
+            #{name},
+        </if>
+        <if test="password!=null and password!=''">
+            #{password},
+        </if>
+        <if test="email!=null and email!=''">
+            #{email},
+        </if>
+        <if test="phoneNumber!=null and phoneNumber!=''">
+            #{phoneNumber},
+        </if>
+        uid=NULL )
+    </insert>
+    <update id="updateUserInfo$set" parameterType="domain.user">
+        UPDATE USERS
+        <choose>
+            <when test="name!=null and name!=''">
+                <set>
+                    NAME=#{name}
+                </set>
+            </when>
+        </choose>
+         WHERE uid=#{id}
+    </update>
+    <select id="insertFroeach" resultMap="userResMap">
+        SELECT * FROM USERS WHERE NAME IN
+        <foreach collection="collection" item="x"  open="(" close=")" separator=",">
+            #{x}
+        </foreach>
+    </select>
+
+    <select id="selectByName" resultMap="userResMap">
+        SELECT * FROM USERS WHERE NAME IN
+        <foreach collection="yoyo" index="0" open="(" close=")" separator="," item="x">
+            #{x}
+        </foreach>
+    </select>
+    <resultMap id="userMatcherMap" type="domain.user">
+        <id column="uid" property="id"/>
+        <result column="name" property="name"/>
+        <result column="password" property="password"/>
+        <result column="email" property="email"/>
+        <result column="phoneNumber" property="phoneNumber"/>
+        <result column="birthday" property="birthday"/>
+    </resultMap>
+
+    <select id="findUserByUid" parameterType="int" resultMap="userMatcherMap">
+        SELECT * FROM USERS WHERE UID=#{uid};
+    </select>
+
+
+</mapper>
