@@ -10,7 +10,7 @@ public class sqlSessionFactoryUtil {
     static {
         try {
             sqlSessionFactory=new SqlSessionFactoryBuilder().build(sqlSessionFactoryUtil.class.getClassLoader().getResourceAsStream("mybatis-config.xml"));
-            System.out.println("<====Sql ses大师傅似的sion Factory initialization complied===== >");
+            System.out.println("<====Sql ses大师傅似的sion Faoioioctory initialization complied===== >");
         }catch (Exception e){
             e.printStackTrace();
         }
